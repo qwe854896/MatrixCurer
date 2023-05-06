@@ -3,16 +3,11 @@
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"features": {
-		"ghcr.io/devcontainers-contrib/features/pipenv:2": {
-			"version": "latest"
-		}
-	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-vscode.cpptools",
-				"ms-python.python"
+				"ms-vscode.cpptools-extension-pack",
+				"donjayamanne.python-extension-pack"
 			]
 		}
 	},
