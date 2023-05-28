@@ -1,7 +1,7 @@
-#ifndef MATRIX_H_INCLUDED
-#define MATRIX_H_INCLUDED
+#pragma once
 
-#include "MatrixCurer/common.h"
+#include <cstddef>
+#include <vector>
 
 class Matrix
 {
@@ -43,10 +43,18 @@ public:
     bool operator==(const Matrix &other) const;
     bool operator!=(const Matrix &other) const;
 
+    // v1 functions
+    // may be move to other place
+    Matrix transpose() const;
+    Matrix operator*(const Matrix &other) const;
+    void svd(Matrix &U, Matrix &S, Matrix &Vt) const;
+    void eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const;
+    bool is_symmetric() const;
+    void set_identity();
+    void resize(const size_t &row, const size_t &col);
+
 private:
     size_t m_nrow;
     size_t m_ncol;
     std::vector<double> m_buffer;
 };
-
-#endif
