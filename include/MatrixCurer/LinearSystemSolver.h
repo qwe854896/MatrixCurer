@@ -16,7 +16,7 @@ public:
     virtual void solve(Matrix A, Matrix b, Matrix &x) override;
 
 private:
-    const double kEpsilon = 1e-8;
+    const long double kEpsilon = 1e-16;
 };
 
 class SVDSolver : public LinearSystemSolver
@@ -25,5 +25,5 @@ public:
     virtual void solve(Matrix A, Matrix b, Matrix &x) override;
 
 private:
-    const double kEpsilon = 1e-8;
+    const long double kEpsilon = 1e-16;
 };

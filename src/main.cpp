@@ -1,46 +1,87 @@
+#include <iostream>
 #include <iomanip>
+#include <vector>
+#include <cmath>
+#include <algorithm>
 
-#include "MatrixCurer/utils.h"
 #include "MatrixCurer/Matrix.h"
 #include "MatrixCurer/LinearSystemSolver.h"
 
+Matrix hilbertMatrix(int n)
+{
+    Matrix A(n, n);
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            A(i, j) = 1.0 / (i + j + 1);
+        }
+    }
+    return A;
+}
+
+void printResults(int n, long double conditionNumber, long double error)
+{
+    std::cout << std::setw(2) << n << " ";
+    std::cout << std::scientific << std::setprecision(6);
+    std::cout << std::setw(20) << conditionNumber << " ";
+    std::cout << std::setw(20) << error << std::endl;
+}
+
+void printResultsForSolver(int i, const Matrix &H, const Matrix &b, const Matrix &x, Matrix &xx, LinearSystemSolver *solver)
+{
+    solver->solve(H, b, xx);
+    // long double conditionNumber = H.norm() * H.inverse().norm();
+
+    Matrix residual = x - xx;
+    long double error = 0;
+    for (int j = 0; j < i; ++j)
+        error = std::max(error, std::abs(residual(j, 0)));
+
+    // printResults(i, conditionNumber, error);
+    printResults(i, 0.0, error);
+}
+
 int main()
 {
-    LinearSystemSolver *solver = new GaussianEliminationSolver;
+    GaussianEliminationSolver gaussian_elimination_solver;
+    SVDSolver svd_solver;
 
-    std::cout << std::fixed << std::setprecision(11);
+    std::cout << std::setw(10) << "n";
+    std::cout << std::setw(20) << "cond";
+    std::cout << std::setw(30) << "error" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
 
-    // Define the matrix A and the vector b for an ill-conditioned system
-    Matrix A(2, 2);
-    A(0, 0) = 0.540;
-    A(0, 1) = 0.323;
-    A(1, 0) = 0.647;
-    A(1, 1) = 0.387;
+    for (int i = 4; i <= 16; ++i)
+    {
+        Matrix x = Matrix(i, 1);
+        for (int j = 0; j < i; ++j)
+            x(j, 0) = 1.0;
 
-    Matrix b(2, 1);
-    b(0, 0) = 0.864;
-    b(1, 0) = 1.034;
+        Matrix H = hilbertMatrix(i);
+        Matrix b = H * x;
+        Matrix xx(i, 1);
 
-    // Solve the linear system using Gaussian elimination
-    Matrix x_gauss(2, 1);
+        printResultsForSolver(i, H, b, x, xx, &svd_solver);
+    }
 
-    solver = new SVDSolver;
-    solver->solve(A, b, x_gauss);
-    delete solver;
+    std::cout << std::setw(10) << "n";
+    std::cout << std::setw(20) << "cond";
+    std::cout << std::setw(30) << "error" << std::endl;
+    std::cout << std::string(50, '-') << std::endl;
 
-    // Solve the linear system using SVD
-    Matrix x_svd(2, 1);
+    for (int i = 4; i <= 16; ++i)
+    {
+        Matrix x = Matrix(i, 1);
+        for (int j = 0; j < i; ++j)
+            x(j, 0) = 1.0;
 
-    solver = new GaussianEliminationSolver;
-    solver->solve(A, b, x_svd);
-    delete solver;
+        Matrix H = hilbertMatrix(i);
+        Matrix b = H * x;
+        Matrix xx(i, 1);
 
-    // Print the solutions
-    std::cout << "Solution using Gaussian elimination: " << x_gauss << std::endl;
-    std::cout << "Ax = " << A * x_gauss << std::endl;
-
-    std::cout << "Solution using SVD: " << x_svd << std::endl;
-    std::cout << "Ax = " << A * x_svd << std::endl;
+        printResultsForSolver(i, H, b, x, xx, &gaussian_elimination_solver);
+    }
 
     return 0;
 }

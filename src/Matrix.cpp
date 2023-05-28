@@ -58,19 +58,19 @@ Matrix::~Matrix()
 }
 
 // No bound check.
-double Matrix::operator()(const size_t &row, const size_t &col) const
+long double Matrix::operator()(const size_t &row, const size_t &col) const
 {
     return m_buffer[row * m_ncol + col];
 }
-double &Matrix::operator()(const size_t &row, const size_t &col)
+long double &Matrix::operator()(const size_t &row, const size_t &col)
 {
     return m_buffer[row * m_ncol + col];
 }
 
 size_t Matrix::nrow() const { return m_nrow; }
 size_t Matrix::ncol() const { return m_ncol; }
-std::vector<double> &Matrix::buffer() { return m_buffer; }
-const std::vector<double> &Matrix::buffer() const { return m_buffer; }
+std::vector<long double> &Matrix::buffer() { return m_buffer; }
+const std::vector<long double> &Matrix::buffer() const { return m_buffer; }
 
 bool Matrix::operator==(const Matrix &other) const
 {
@@ -119,12 +119,35 @@ Matrix Matrix::operator*(const Matrix &other) const
     {
         for (size_t j = 0; j < p; ++j)
         {
-            double sum = 0.0;
+            long double sum = 0.0;
             for (size_t k = 0; k < n; ++k)
             {
                 sum += (*this)(i, k) * other(k, j);
             }
             result(i, j) = sum;
+        }
+    }
+
+    return result;
+}
+
+Matrix Matrix::operator-(const Matrix &other) const
+{
+    const size_t m = nrow();
+    const size_t n = ncol();
+
+    if (m != other.nrow() || n != other.ncol())
+    {
+        throw std::invalid_argument("Matrix::operator*: sizes do not match");
+    }
+
+    Matrix result(m, n);
+
+    for (size_t i = 0; i < m; ++i)
+    {
+        for (size_t j = 0; j < n; ++j)
+        {
+            result(i, j) = (*this)(i, j) - other(i, j);
         }
     }
 
@@ -142,7 +165,7 @@ void Matrix::svd(Matrix &U, Matrix &S, Matrix &Vt) const
     {
         for (size_t j = i; j < n; ++j)
         {
-            double sum = 0.0;
+            long double sum = 0.0;
             for (size_t k = 0; k < m; ++k)
             {
                 sum += (*this)(k, i) * (*this)(k, j);
@@ -166,7 +189,7 @@ void Matrix::svd(Matrix &U, Matrix &S, Matrix &Vt) const
     {
         for (size_t j = 0; j < n; ++j)
         {
-            double sum = 0.0;
+            long double sum = 0.0;
             for (size_t k = 0; k < n; ++k)
             {
                 sum += (*this)(i, k) * Vt(j, k);
@@ -179,7 +202,7 @@ void Matrix::svd(Matrix &U, Matrix &S, Matrix &Vt) const
     S = Matrix(n, n);
     for (size_t i = 0; i < n; ++i)
     {
-        S(i, i) = std::sqrt(std::max(eigen_values(i, 0), 0.0));
+        S(i, i) = std::sqrt(std::max(eigen_values(i, 0), (long double)0.0));
     }
 
     // Compute U
@@ -208,7 +231,7 @@ void Matrix::eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const
     eigen_vectors.set_identity();
 
     // Define tolerance and maximum number of iterations
-    const double tol = 1e-10;
+    const long double tol = 1e-10;
     const int max_iterations = 1000;
 
     // Create a copy of the input matrix to store the result
@@ -218,13 +241,13 @@ void Matrix::eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const
     for (int iteration = 0; iteration < max_iterations; ++iteration)
     {
         // Find the largest off-diagonal element
-        double max_off_diag = 0.0;
+        long double max_off_diag = 0.0;
         size_t max_i = 0, max_j = 0;
         for (size_t i = 0; i < n; ++i)
         {
             for (size_t j = i + 1; j < n; ++j)
             {
-                double off_diag = std::abs(A(i, j));
+                long double off_diag = std::abs(A(i, j));
                 if (off_diag > max_off_diag)
                 {
                     max_off_diag = off_diag;
@@ -241,7 +264,7 @@ void Matrix::eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const
         }
 
         // Compute the rotation angle
-        double theta = 0.5 * std::atan2(2.0 * A(max_i, max_j), A(max_i, max_i) - A(max_j, max_j));
+        long double theta = 0.5 * std::atan2(2.0 * A(max_i, max_j), A(max_i, max_i) - A(max_j, max_j));
 
         // Compute the rotation matrix
         Matrix R(n, n);
@@ -256,7 +279,7 @@ void Matrix::eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const
         eigen_vectors = eigen_vectors * R;
 
         // Check for convergence
-        double sum_off_diag = 0.0;
+        long double sum_off_diag = 0.0;
         for (size_t i = 0; i < n; ++i)
         {
             for (size_t j = i + 1; j < n; ++j)
@@ -280,7 +303,7 @@ void Matrix::eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const
     for (size_t i = 0; i < n; ++i)
     {
         // Calculate the length of the i-th eigenvector
-        double norm = 0.0;
+        long double norm = 0.0;
         for (size_t j = 0; j < n; ++j)
         {
             norm += std::pow(eigen_vectors(j, i), 2);

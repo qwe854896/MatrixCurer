@@ -28,16 +28,16 @@ public:
     virtual ~Matrix();
 
     // Element access functions
-    double operator()(const size_t &row, const size_t &col) const;
-    double &operator()(const size_t &row, const size_t &col);
+    long double operator()(const size_t &row, const size_t &col) const;
+    long double &operator()(const size_t &row, const size_t &col);
 
     // Size functions
     size_t nrow() const;
     size_t ncol() const;
 
     // Buffer functions
-    std::vector<double> &buffer();
-    const std::vector<double> &buffer() const;
+    std::vector<long double> &buffer();
+    const std::vector<long double> &buffer() const;
 
     // Comparison operators
     bool operator==(const Matrix &other) const;
@@ -46,6 +46,7 @@ public:
     // v1 functions
     // may be move to other place
     Matrix transpose() const;
+    Matrix operator-(const Matrix &other) const;
     Matrix operator*(const Matrix &other) const;
     void svd(Matrix &U, Matrix &S, Matrix &Vt) const;
     void eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const;
@@ -56,5 +57,5 @@ public:
 private:
     size_t m_nrow;
     size_t m_ncol;
-    std::vector<double> m_buffer;
+    std::vector<long double> m_buffer;
 };

@@ -22,10 +22,10 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
     {
         // Find the pivot row
         size_t pivot_row = k;
-        double pivot_value = std::abs(A(k, k));
+        long double pivot_value = std::abs(A(k, k));
         for (size_t i = k + 1; i < n; ++i)
         {
-            double abs_value = std::abs(A(i, k));
+            long double abs_value = std::abs(A(i, k));
             if (abs_value > pivot_value)
             {
                 pivot_row = i;
@@ -44,7 +44,7 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
         }
 
         // Check for zero pivot
-        double pivot = A(k, k);
+        long double pivot = A(k, k);
         if (std::abs(pivot) < kEpsilon)
         {
             throw std::runtime_error("GaussianElimination: zero pivot");
@@ -53,7 +53,7 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
         // Eliminate
         for (size_t i = k + 1; i < n; ++i)
         {
-            double factor = A(i, k) / pivot;
+            long double factor = A(i, k) / pivot;
             for (size_t j = k + 1; j < m; ++j)
             {
                 A(i, j) -= factor * A(k, j);
@@ -67,7 +67,7 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
     {
         for (size_t j = i - 1; j < i; --j)
         {
-            double factor = A(j, i) / A(i, i);
+            long double factor = A(j, i) / A(i, i);
             b(j, 0) -= factor * b(i, 0);
         }
     }
@@ -75,7 +75,7 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
     // Scale
     for (size_t i = 0; i < n; ++i)
     {
-        double factor = 1.0 / A(i, i);
+        long double factor = 1.0 / A(i, i);
         b(i, 0) *= factor;
     }
 
@@ -96,14 +96,14 @@ void SVDSolver::solve(Matrix A, Matrix b, Matrix &x)
     Matrix U, S, Vt;
     A.svd(U, S, Vt);
 
-    std::cerr << "SVDSolver::solve::A: " << A << std::endl;
-    std::cerr << "SVDSolver::solve::U: " << U << std::endl;
-    std::cerr << "SVDSolver::solve::S: " << S << std::endl;
-    std::cerr << "SVDSolver::solve::Vt: " << Vt << std::endl;
-    std::cerr << "SVDSolver::solve::USVt: " << U * S * Vt << std::endl;
+    // std::cerr << "SVDSolver::solve::A: " << A << std::endl;
+    // std::cerr << "SVDSolver::solve::U: " << U << std::endl;
+    // std::cerr << "SVDSolver::solve::S: " << S << std::endl;
+    // std::cerr << "SVDSolver::solve::Vt: " << Vt << std::endl;
+    // std::cerr << "SVDSolver::solve::USVt: " << U * S * Vt << std::endl;
 
     // Check for singular values close to zero
-    const double threshold = kEpsilon * S(0, 0);
+    const long double threshold = kEpsilon * S(0, 0);
     for (size_t i = 0; i < m; ++i)
     {
         if (std::abs(S(i, i)) < threshold)
@@ -116,7 +116,7 @@ void SVDSolver::solve(Matrix A, Matrix b, Matrix &x)
     Matrix S_inv(m, n);
     for (size_t i = 0; i < m; ++i)
     {
-        double val = S(i, i);
+        long double val = S(i, i);
         if (val != 0)
         {
             S_inv(i, i) = 1.0 / val;
