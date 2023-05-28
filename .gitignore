@@ -20,5 +20,5 @@ Makefile.old
 *.exe
 *.dll
 
-# Ignore testing results
-# test_results/
+# IDE
+.vscode
