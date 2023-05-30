@@ -5,8 +5,13 @@ project(MatrixCurer)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(TBB REQUIRED)
+
 # Include directories
 include_directories(include)
+
+# Link directories
+link_directories(lib)
 
 # Library sources
 set(LIB_SOURCES
@@ -27,7 +32,7 @@ set(EXE_SOURCES
 add_executable(MatrixCurer ${EXE_SOURCES})
 
 # Link executable with library
-target_link_libraries(MatrixCurer MatrixCurerLib)
+target_link_libraries(MatrixCurer MatrixCurerLib tbb)
 
 # Tests
 # add_subdirectory(test)

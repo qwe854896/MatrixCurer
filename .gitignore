@@ -22,3 +22,8 @@ Makefile.old
 
 # IDE
 .vscode
+
+# tbb
+include/oneapi
+include/tbb
+lib
