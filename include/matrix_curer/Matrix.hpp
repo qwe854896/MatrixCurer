@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <vector>
 
+#include "CustomAllocator.hpp"
+
 class Matrix
 {
 public:
@@ -25,37 +27,35 @@ public:
     Matrix &operator=(Matrix &&other) noexcept;
 
     // Destructor
-    virtual ~Matrix();
+    ~Matrix();
+
+    // Friend class
+    friend class MatrixOperation;
 
     // Element access functions
-    long double operator()(const size_t &row, const size_t &col) const;
-    long double &operator()(const size_t &row, const size_t &col);
+    double operator()(const size_t &row, const size_t &col) const;
+    double &operator()(const size_t &row, const size_t &col);
 
     // Size functions
     size_t nrow() const;
     size_t ncol() const;
 
     // Buffer functions
-    std::vector<long double> &buffer();
-    const std::vector<long double> &buffer() const;
+    std::vector<double, CustomAllocator<double>> &buffer();
+    const std::vector<double, CustomAllocator<double>> &buffer() const;
 
     // Comparison operators
     bool operator==(const Matrix &other) const;
     bool operator!=(const Matrix &other) const;
 
-    // v1 functions
-    // may be move to other place
-    Matrix transpose() const;
+    // Arithmetic operators
+    Matrix operator+(const Matrix &other) const;
     Matrix operator-(const Matrix &other) const;
     Matrix operator*(const Matrix &other) const;
-    void svd(Matrix &U, Matrix &S, Matrix &Vt) const;
-    void eigen_symmetric(Matrix &eigen_values, Matrix &eigen_vectors) const;
-    bool is_symmetric() const;
-    void set_identity();
-    void resize(const size_t &row, const size_t &col);
+    Matrix operator-() const;
 
 private:
     size_t m_nrow;
     size_t m_ncol;
-    std::vector<long double> m_buffer;
+    std::vector<double, CustomAllocator<double>> m_buffer;
 };

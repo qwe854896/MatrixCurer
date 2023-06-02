@@ -2,6 +2,6 @@
 
 #include <iostream>
 
-#include "MatrixCurer/Matrix.h"
+#include "Matrix.hpp"
 
 std::ostream &operator<<(std::ostream &os, const Matrix &A);

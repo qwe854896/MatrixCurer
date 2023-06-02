@@ -4,8 +4,10 @@
 #include <cmath>
 #include <algorithm>
 
-#include "MatrixCurer/Matrix.h"
-#include "MatrixCurer/LinearSystemSolver.h"
+#include "matrix_curer/Matrix.hpp"
+#include "matrix_curer/LinearSystemSolver.hpp"
+#include "matrix_curer/LinearSystemSolverConcrete1.hpp"
+#include "matrix_curer/LinearSystemSolverConcrete2.hpp"
 
 Matrix hilbertMatrix(int n)
 {
@@ -34,7 +36,7 @@ void printResultsForSolver(int i, const Matrix &H, const Matrix &b, const Matrix
     // long double conditionNumber = H.norm() * H.inverse().norm();
 
     Matrix residual = x - xx;
-    long double error = 0;
+    double error = 0;
     for (int j = 0; j < i; ++j)
         error = std::max(error, std::abs(residual(j, 0)));
 
@@ -44,8 +46,8 @@ void printResultsForSolver(int i, const Matrix &H, const Matrix &b, const Matrix
 
 int main()
 {
-    GaussianEliminationSolver gaussian_elimination_solver;
-    SVDSolver svd_solver;
+    LinearSystemSolver *gaussian_elimination_solver = new LinearSystemSolverConcrete1;
+    LinearSystemSolver *svd_solver = new LinearSystemSolverConcrete2;
 
     std::cout << std::setw(10) << "n";
     std::cout << std::setw(20) << "cond";
@@ -62,7 +64,7 @@ int main()
         Matrix b = H * x;
         Matrix xx(i, 1);
 
-        printResultsForSolver(i, H, b, x, xx, &svd_solver);
+        printResultsForSolver(i, H, b, x, xx, svd_solver);
     }
 
     std::cout << std::setw(10) << "n";
@@ -80,7 +82,7 @@ int main()
         Matrix b = H * x;
         Matrix xx(i, 1);
 
-        printResultsForSolver(i, H, b, x, xx, &gaussian_elimination_solver);
+        printResultsForSolver(i, H, b, x, xx, gaussian_elimination_solver);
     }
 
     return 0;

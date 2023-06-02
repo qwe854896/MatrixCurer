@@ -1,9 +1,10 @@
-#include "MatrixCurer/LinearSystemSolver.h"
-#include "MatrixCurer/Matrix.h"
-#include "MatrixCurer/utils.h"
+#include "matrix_curer/LinearSystemSolverConcrete1.hpp"
+#include "matrix_curer/utils.hpp"
 
-void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
+void LinearSystemSolverConcrete1::solve(const Matrix &_A, const Matrix &_b, Matrix &x)
 {
+    Matrix A(_A), b(_b);
+
     const size_t n = A.nrow();
     const size_t m = A.ncol();
 
@@ -45,7 +46,7 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
 
         // Check for zero pivot
         long double pivot = A(k, k);
-        if (std::abs(pivot) < kEpsilon)
+        if (std::abs(pivot) < 1e-12)
         {
             throw std::runtime_error("GaussianElimination: zero pivot");
         }
@@ -80,52 +81,4 @@ void GaussianEliminationSolver::solve(Matrix A, Matrix b, Matrix &x)
     }
 
     x = b;
-}
-
-void SVDSolver::solve(Matrix A, Matrix b, Matrix &x)
-{
-    const size_t n = A.nrow();
-    const size_t m = A.ncol();
-
-    if (n != b.nrow() || b.ncol() != 1)
-    {
-        throw std::invalid_argument("solveLinearSystemSVD: b has wrong size");
-    }
-
-    // Compute the SVD of A
-    Matrix U, S, Vt;
-    A.svd(U, S, Vt);
-
-    // std::cerr << "SVDSolver::solve::A: " << A << std::endl;
-    // std::cerr << "SVDSolver::solve::U: " << U << std::endl;
-    // std::cerr << "SVDSolver::solve::S: " << S << std::endl;
-    // std::cerr << "SVDSolver::solve::Vt: " << Vt << std::endl;
-    // std::cerr << "SVDSolver::solve::USVt: " << U * S * Vt << std::endl;
-
-    // Check for singular values close to zero
-    const long double threshold = kEpsilon * S(0, 0);
-    for (size_t i = 0; i < m; ++i)
-    {
-        if (std::abs(S(i, i)) < threshold)
-        {
-            throw std::runtime_error("solveLinearSystemSVD: singular matrix");
-        }
-    }
-
-    // Compute the pseudo-inverse of S
-    Matrix S_inv(m, n);
-    for (size_t i = 0; i < m; ++i)
-    {
-        long double val = S(i, i);
-        if (val != 0)
-        {
-            S_inv(i, i) = 1.0 / val;
-        }
-    }
-
-    // Compute the solution x = V * S_inv * U^T * b
-    Matrix U_t = U.transpose();
-    Matrix V = Vt.transpose();
-
-    x = V * S_inv * U_t * b;
 }

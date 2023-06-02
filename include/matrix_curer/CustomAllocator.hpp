@@ -1,5 +1,4 @@
-#ifndef CUSTOM_ALLOCATOR_H_INCLUDED
-#define CUSTOM_ALLOCATOR_H_INCLUDED
+#pragma once
 
 #include <cstddef>
 
@@ -32,5 +31,3 @@ private:
     static size_t m_bytes_allocated;
     static size_t m_bytes_deallocated;
 };
-
-#endif

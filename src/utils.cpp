@@ -1,4 +1,4 @@
-#include "MatrixCurer/utils.h"
+#include "matrix_curer/utils.hpp"
 
 std::ostream &operator<<(std::ostream &os, const Matrix &A)
 {

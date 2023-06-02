@@ -1,17 +1,21 @@
+#include "matrix_curer/MatrixMultiplication.hpp"
+
 #include <mkl/mkl.h>
 #include <mkl/mkl_lapack.h>
 #include <mkl/mkl_lapacke.h>
 
 #include "stdexcept"
-#include "Multiply.h"
 
-void check_matrix(const Matrix &mat1, const Matrix &mat2)
+namespace
 {
-    if (mat1.ncol() != mat2.nrow())
-        throw std::invalid_argument("Matrix: the number of columns in the first matrix must be equal to the number of rows in the second matrix");
+    void check_matrix(const Matrix &mat1, const Matrix &mat2)
+    {
+        if (mat1.ncol() != mat2.nrow())
+            throw std::invalid_argument("Matrix: the number of columns in the first matrix must be equal to the number of rows in the second matrix");
+    }
 }
 
-Matrix &multiply_naive(const Matrix &mat1, const Matrix &mat2)
+Matrix &MatrixMultiplication::multiply_naive(const Matrix &mat1, const Matrix &mat2)
 {
     check_matrix(mat1, mat2);
 
@@ -31,7 +35,7 @@ Matrix &multiply_naive(const Matrix &mat1, const Matrix &mat2)
     return *rst;
 }
 
-Matrix &multiply_tile(const Matrix &mat1, const Matrix &mat2, size_t tsize)
+Matrix &MatrixMultiplication::multiply_tile(const Matrix &mat1, const Matrix &mat2, size_t tsize)
 {
     check_matrix(mat1, mat2);
 
@@ -157,7 +161,7 @@ Matrix &multiply_tile(const Matrix &mat1, const Matrix &mat2, size_t tsize)
     return *rst;
 }
 
-Matrix &multiply_mkl(const Matrix &mat1, const Matrix &mat2)
+Matrix &MatrixMultiplication::multiply_mkl(const Matrix &mat1, const Matrix &mat2)
 {
     check_matrix(mat1, mat2);
 

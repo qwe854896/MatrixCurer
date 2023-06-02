@@ -35,7 +35,8 @@
 #include <atomic>
 #include <iostream>
 
-#include "matrix.hpp"
+#include "matrix_curer/Matrix.hpp"
+#include "matrix_curer/MatrixMultiplication.hpp"
 
 #ifdef __GNUG__
 #define PYTHON_WRAPPER_VISIBILITY __attribute__((visibility("hidden")))
@@ -220,9 +221,9 @@ namespace python
                     { return self(std::get<0>(idx), std::get<1>(idx)) = value; })
                 .def(pybind11::init<const Matrix &>()) // Add copy constructor
                 ;
-            mod.def("multiply_mkl", &multiply_mkl);
-            mod.def("multiply_naive", &multiply_naive);
-            mod.def("multiply_tile", &multiply_tile);
+            mod.def("multiply_mkl", &MatrixMultiplication::multiply_mkl);
+            mod.def("multiply_naive", &MatrixMultiplication::multiply_naive);
+            mod.def("multiply_tile", &MatrixMultiplication::multiply_tile);
         }
 
     }; /* end class WrapMatrix */
