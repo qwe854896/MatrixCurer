@@ -1,6 +1,8 @@
 import random
 
 from matrix_curer import Matrix
+from matrix_curer import multiply_naive
+
 
 MIN_SIZE = 1
 MAX_SIZE = 10
@@ -79,6 +81,63 @@ def test_inequal_comparator():
             mat2[i, j] = i - j
 
     assert mat1 != mat2
+
+
+def test_addition():
+    mat1, nrow, ncol = random_matrix(sz_min=2)
+    mat2, nrow, ncol = random_matrix(nrow=nrow, ncol=ncol)
+
+    for i in range(nrow):
+        for j in range(ncol):
+            mat1[i, j] = random.randint(-100, 100)
+            mat2[i, j] = random.randint(-100, 100)
+
+    mat = mat1 + mat2
+    for i in range(nrow):
+        for j in range(ncol):
+            assert mat[i, j] == mat1[i, j] + mat2[i, j]
+
+
+def test_substraction():
+    mat1, nrow, ncol = random_matrix(sz_min=2)
+    mat2, nrow, ncol = random_matrix(nrow=nrow, ncol=ncol)
+
+    for i in range(nrow):
+        for j in range(ncol):
+            mat1[i, j] = random.randint(-100, 100)
+            mat2[i, j] = random.randint(-100, 100)
+
+    mat = mat1 - mat2
+    for i in range(nrow):
+        for j in range(ncol):
+            assert mat[i, j] == mat1[i, j] - mat2[i, j]
+
+
+def test_multiplication():
+    mat1, nrow, ncol = random_matrix(sz_min=2)
+    mat2, nrow, ncol = random_matrix(nrow=nrow, ncol=ncol)
+
+    for i in range(nrow):
+        for j in range(ncol):
+            mat1[i, j] = random.randint(-100, 100)
+            mat2[i, j] = random.randint(-100, 100)
+
+    mat = mat1 * mat2
+    mat_naive = multiply_naive(mat1, mat2)
+    assert mat == mat_naive
+
+
+def test_unary_negation():
+    mat1, nrow, ncol = random_matrix(sz_min=2)
+
+    for i in range(nrow):
+        for j in range(ncol):
+            mat1[i, j] = random.randint(-100, 100)
+
+    mat = -mat1
+    for i in range(nrow):
+        for j in range(ncol):
+            assert mat[i, j] == -mat1[i, j]
 
 
 def test_copy_constructor():

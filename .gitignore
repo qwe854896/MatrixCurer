@@ -27,3 +27,6 @@ Makefile.old
 include/oneapi
 include/tbb
 lib
+
+# Python
+__pycache__
