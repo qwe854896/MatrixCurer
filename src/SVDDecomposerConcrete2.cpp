@@ -1,5 +1,5 @@
 
-#include "matrix_curer/SVDDecomposerConcrete1.hpp"
+#include "matrix_curer/SVDDecomposerConcrete2.hpp"
 
 #include <cmath>
 #include <stdexcept>
@@ -110,7 +110,7 @@ namespace
     }
 }
 
-void SVDDecomposerConcrete1::decompose(const Matrix &A, Matrix &U, Matrix &S, Matrix &Vt)
+void SVDDecomposerConcrete2::decompose(const Matrix &A, Matrix &U, Matrix &S, Matrix &Vt)
 {
     const size_t m = A.nrow();
     const size_t n = A.ncol();

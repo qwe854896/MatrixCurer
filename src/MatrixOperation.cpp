@@ -106,6 +106,14 @@ bool MatrixOperation::is_symmetric(const Matrix &A)
     return true;
 }
 
+Matrix MatrixOperation::Identity(const size_t &size)
+{
+    Matrix mat(size, size);
+    for (int i = 0; i < size; ++i)
+        mat(i, i) = 1;
+    return mat;
+}
+
 void MatrixOperation::set_identity(Matrix &A)
 {
     const size_t n = A.nrow();

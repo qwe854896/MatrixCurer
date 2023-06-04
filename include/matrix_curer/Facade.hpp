@@ -8,6 +8,6 @@
 class MatrixCurer
 {
 public:
-    Matrix solveLinearSystem(const Matrix &A, const Matrix &b, const std::string &strategy = "");
-    std::tuple<Matrix, Matrix, Matrix> decomposeSVD(const Matrix &A, const std::string &strategy = "");
+    static Matrix &solveLinearSystem(const Matrix &A, const Matrix &b, const std::string &strategy = "");
+    static std::tuple<Matrix, Matrix, Matrix> decomposeSVD(const Matrix &A, const std::string &strategy = "");
 };

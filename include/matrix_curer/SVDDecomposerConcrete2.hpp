@@ -5,5 +5,5 @@
 class SVDDecomposerConcrete2 : public SVDDecomposer
 {
 public:
-    virtual std::tuple<Matrix, Matrix, Matrix> decompose(const Matrix &A) override;
+    virtual void decompose(const Matrix &A, Matrix &U, Matrix &S, Matrix &Vt) override;
 };

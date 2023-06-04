@@ -20,7 +20,8 @@ void LinearSystemSolverConcrete2::solve(const Matrix &A, const Matrix &b, Matrix
     // Compute the SVD of A
     SVDDecomposer *decomposer = new SVDDecomposerConcrete1;
 
-    auto [U, S, Vt] = decomposer->decompose(A);
+    Matrix U, S, Vt;
+    decomposer->decompose(A, U, S, Vt);
 
     // std::cerr << "SVDSolver::solve::A: " << A << std::endl;
     // std::cerr << "SVDSolver::solve::U: " << U << std::endl;

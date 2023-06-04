@@ -8,5 +8,5 @@ class SVDDecomposer
 {
 public:
     virtual ~SVDDecomposer() {}
-    virtual std::tuple<Matrix, Matrix, Matrix> decompose(const Matrix &A) = 0;
+    virtual void decompose(const Matrix &A, Matrix &U, Matrix &S, Matrix &Vt) = 0;
 };

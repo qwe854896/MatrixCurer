@@ -28,6 +28,7 @@
 
 #include <pybind11/pybind11.h> // Must be the first include.
 #include <pybind11/attr.h>
+#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
@@ -35,8 +36,10 @@
 #include <atomic>
 #include <iostream>
 
+#include "matrix_curer/Facade.hpp"
 #include "matrix_curer/Matrix.hpp"
 #include "matrix_curer/MatrixMultiplication.hpp"
+#include "matrix_curer/MatrixOperation.hpp"
 
 #ifdef __GNUG__
 #define PYTHON_WRAPPER_VISIBILITY __attribute__((visibility("hidden")))
@@ -201,6 +204,18 @@ namespace python
             (*this)
                 // The Python constructor will be counted!
                 .def_tagged(py::init<size_t, size_t>())
+                .def(py::init<const Matrix &>()) // Add copy constructor
+                .def(py::init([](const std::vector<std::vector<double>> &data)
+                              {
+                                size_t n = data.size();
+                                size_t m = data[0].size();
+                                Matrix rst(n, m);
+                                for (size_t i = 0; i < n; ++i) {
+                                    for (size_t j = 0; j < m; ++j) {
+                                        rst(i, j) = data[i][j];
+                                    }
+                                }
+                                return rst; }))
                 .def_property_readonly("nrow", &Matrix::nrow)
                 .def_property_readonly("ncol", &Matrix::ncol)
                 .def_property(
@@ -211,6 +226,22 @@ namespace python
                           self.buffer().data(),
                           pybind11::cast(&self)); },
                     nullptr)
+                .def_property(
+                    "T", [](Matrix &self)
+                    { return MatrixOperation::transpose(self); },
+                    nullptr)
+                .def(
+                    "inv", [](Matrix &self)
+                    { return MatrixOperation::inverse(self); })
+                .def(
+                    "svd", [](Matrix &self, const std::string &strategy)
+                    { 
+                        auto tuple = MatrixCurer::decomposeSVD(self, strategy);
+                        return tuple; },
+                    py::return_value_policy::reference_internal)
+                .def(
+                    "set_identity", [](Matrix &self)
+                    { MatrixOperation::set_identity(self); })
                 .def("__eq__", [](Matrix const &self, Matrix const &other)
                      { return self == other; })
                 .def(
@@ -219,11 +250,22 @@ namespace python
                 .def(
                     "__setitem__", [](Matrix &self, std::tuple<size_t, size_t> idx, double value)
                     { return self(std::get<0>(idx), std::get<1>(idx)) = value; })
-                .def(pybind11::init<const Matrix &>()) // Add copy constructor
+                .def("__add__", [](const Matrix &self, const Matrix &other)
+                     { return self + other; }) // Addition operator
+                .def("__sub__", [](const Matrix &self, const Matrix &other)
+                     { return self - other; }) // Substraction operator
+                .def("__mul__", [](const Matrix &self, const Matrix &other)
+                     { return self * other; }) // Multiplication operator
+                .def("__neg__", [](const Matrix &self)
+                     { return -self; }) // Negation operator
                 ;
+
+            ;
             mod.def("multiply_mkl", &MatrixMultiplication::multiply_mkl);
             mod.def("multiply_naive", &MatrixMultiplication::multiply_naive);
             mod.def("multiply_tile", &MatrixMultiplication::multiply_tile);
+            mod.def("solve", &MatrixCurer::solveLinearSystem);
+            mod.def("Identity", &MatrixOperation::Identity);
         }
 
     }; /* end class WrapMatrix */
