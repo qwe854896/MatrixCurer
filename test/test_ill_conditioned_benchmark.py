@@ -13,38 +13,39 @@ def hilbert_matrix(n):
     return A
 
 
-def test_numpy_solve():
-    print("{:10s} {:20s} {:30s}".format("n", "cond", "error"))
-    print("-" * 50)
+def test_solve():
+    with open("ill_conditioned_benchmark.txt", 'w') as f:
+        print("=========== numpy ===========", file=f)
+        print("{:10s} {:20s} {:30s}".format("n", "cond", "error"), file=f)
+        print("-" * 50, file=f)
 
-    for i in range(4, 17):
-        x = np.ones(i)
-        H = hilbert_matrix(i)
-        b = H.dot(x)
+        for i in range(4, 17):
+            x = np.ones(i)
+            H = hilbert_matrix(i)
+            b = H.dot(x)
 
-        c = cond(H)
+            c = cond(H)
 
-        xx = solve(H, b)
-        err = norm(x - xx, np.inf) / norm(x, np.inf)
+            xx = solve(H, b)
+            err = norm(x - xx, np.inf) / norm(x, np.inf)
 
-        print("{:2d} {:20e} {:20e}".format(i, c, err))
+            print("{:2d} {:20e} {:20e}".format(i, c, err), file=f)
 
+        print("\n======== matrix_curer ========", file=f)
+        print("{:10s} {:20s} {:30s}".format("n", "cond", "error"), file=f)
+        print("-" * 50, file=f)
 
-def test_matrix_curer_solve():
-    print("{:10s} {:20s} {:30s}".format("n", "cond", "error"))
-    print("-" * 50)
+        for i in range(4, 17):
+            x = np.ones(i)
+            H = hilbert_matrix(i)
+            b = H.dot(x)
+            c = cond(H)
 
-    for i in range(4, 17):
-        x = np.ones(i)
-        H = hilbert_matrix(i)
-        b = H.dot(x)
-        c = cond(H)
+            b = np.reshape(b, (-1, 1))
+            H, b = Matrix(H), Matrix(b)
+            xx = matrix_curer_solve(H, b, "concrete1")
+            xx = xx.array
 
-        b = np.reshape(b, (-1, 1))
-        H, b = Matrix(H), Matrix(b)
-        xx = matrix_curer_solve(H, b, "concrete1")
-        xx = xx.array
+            err = norm(x - xx, np.inf) / norm(x, np.inf)
 
-        err = norm(x - xx, np.inf) / norm(x, np.inf)
-
-        print("{:2d} {:20e} {:20e}".format(i, c, err))
+            print("{:2d} {:20e} {:20e}".format(i, c, err), file=f)
