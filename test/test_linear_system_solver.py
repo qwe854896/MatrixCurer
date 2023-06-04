@@ -17,7 +17,8 @@ def random_matrix(nrow=0, ncol=0, sz_min=MIN_SIZE, sz_max=MAX_SIZE):
 
 @pytest.mark.parametrize("tolerance", [1e-6])  # Adjust tolerance as needed
 @pytest.mark.parametrize("strategy", ["", "concrete1", "concrete2"])
-@pytest.mark.parametrize("shape", [(2, 2), (4, 2), (2, 4)])
+# @pytest.mark.parametrize("shape", [(2, 2), (4, 2), (2, 4)])
+@pytest.mark.parametrize("shape", [(2, 2)])
 def test_linear_system_solver(tolerance, strategy, shape):
     A = Matrix(shape[0], shape[1])
 

@@ -18,7 +18,7 @@ Matrix &MatrixCurer::solveLinearSystem(const Matrix &A, const Matrix &b, const s
     // Create the linear system solver based on the strategy
     std::unique_ptr<LinearSystemSolver> solver;
 
-    if (strategy == "concrete1")
+    if (strategy == "" || strategy == "concrete1")
     {
         solver = std::make_unique<LinearSystemSolverConcrete1>();
     }
@@ -42,7 +42,7 @@ std::tuple<Matrix, Matrix, Matrix> MatrixCurer::decomposeSVD(const Matrix &A, co
     // Create the SVD decomposer based on the strategy
     std::unique_ptr<SVDDecomposer> decomposer;
 
-    if (strategy == "concrete1")
+    if (strategy == "" || strategy == "concrete1")
     {
         decomposer = std::make_unique<SVDDecomposerConcrete1>();
     }

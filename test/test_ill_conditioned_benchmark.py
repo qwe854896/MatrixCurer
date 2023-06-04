@@ -35,7 +35,7 @@ def test_solve():
         print("{:10s} {:20s} {:30s}".format("n", "cond", "error"), file=f)
         print("-" * 50, file=f)
 
-        for i in range(4, 17):
+        for i in range(4, 10):
             x = np.ones(i)
             H = hilbert_matrix(i)
             b = H.dot(x)
@@ -44,6 +44,25 @@ def test_solve():
             b = np.reshape(b, (-1, 1))
             H, b = Matrix(H), Matrix(b)
             xx = matrix_curer_solve(H, b, "concrete1")
+            xx = xx.array
+
+            err = norm(x - xx, np.inf) / norm(x, np.inf)
+
+            print("{:2d} {:20e} {:20e}".format(i, c, err), file=f)
+
+        print("\n======== matrix_curer ========", file=f)
+        print("{:10s} {:20s} {:30s}".format("n", "cond", "error"), file=f)
+        print("-" * 50, file=f)
+
+        for i in range(4, 17):
+            x = np.ones(i)
+            H = hilbert_matrix(i)
+            b = H.dot(x)
+            c = cond(H)
+
+            b = np.reshape(b, (-1, 1))
+            H, b = Matrix(H), Matrix(b)
+            xx = matrix_curer_solve(H, b, "concrete2")
             xx = xx.array
 
             err = norm(x - xx, np.inf) / norm(x, np.inf)

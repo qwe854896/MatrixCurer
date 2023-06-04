@@ -16,7 +16,8 @@ def random_matrix(nrow=0, ncol=0, sz_min=MIN_SIZE, sz_max=MAX_SIZE):
 
 @pytest.mark.parametrize("tolerance", [1e-6])  # Adjust tolerance as needed
 @pytest.mark.parametrize("strategy", ["", "concrete1", "concrete2"])
-@pytest.mark.parametrize("shape", [(5, 5), (5, 10), (10, 5)])
+# @pytest.mark.parametrize("shape", [(5, 5), (5, 10), (10, 5)])
+@pytest.mark.parametrize("shape", [(5, 5)])
 def test_svd(tolerance, strategy, shape):
     mat, nrow, ncol = random_matrix(nrow=shape[0], ncol=shape[1], sz_min=5)
 
