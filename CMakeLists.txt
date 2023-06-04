@@ -20,6 +20,10 @@ set_target_properties(MatrixCurer PROPERTIES PREFIX "")
 set_target_properties(MatrixCurer PROPERTIES OUTPUT_NAME "matrix_curer")
 target_link_libraries(MatrixCurer PRIVATE pybind11::embed blas)
 
+# Executable target
+add_executable(MatrixCurerExe ${LIB_SOURCES})
+target_link_libraries(MatrixCurerExe PRIVATE pybind11::embed blas)
+
 # Test target
 add_custom_target(test
     COMMAND python3 -m pytest -v -s ${CMAKE_CURRENT_LIST_DIR}/test

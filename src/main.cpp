@@ -22,11 +22,10 @@ Matrix hilbertMatrix(int n)
     return A;
 }
 
-void printResults(int n, long double conditionNumber, long double error)
+void printResults(int n, long double error)
 {
     std::cout << std::setw(2) << n << " ";
     std::cout << std::scientific << std::setprecision(6);
-    std::cout << std::setw(20) << conditionNumber << " ";
     std::cout << std::setw(20) << error << std::endl;
 }
 
@@ -40,8 +39,7 @@ void printResultsForSolver(int i, const Matrix &H, const Matrix &b, const Matrix
     for (int j = 0; j < i; ++j)
         error = std::max(error, std::abs(residual(j, 0)));
 
-    // printResults(i, conditionNumber, error);
-    printResults(i, 0.0, error);
+    printResults(i, error);
 }
 
 int main()
